@@ -18,7 +18,7 @@ public class Segway {
     private RevoluteJoint rearJoint;
 
     private static final float MOTOR_SPEED = 0.0f;
-    private static final float JUMP_FORCE = 40.0f;
+    private static final float JUMP_FORCE = 20.0f;
 
     public Segway(World world, float posX, float posY) {
         this.world = world;

@@ -60,7 +60,7 @@ public class RagDollRiderApp {
     private void createRandomObstacles() {
         Random random = new Random();
         int maxObstacles = 2;
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < maxObstacles; i++) {
             float posX = random.nextFloat() * 10 + 10;
             float posY = 0.5f; // Adjusted height
             float size = random.nextFloat() * 1.5f + 0.5f;

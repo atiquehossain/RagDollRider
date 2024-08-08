@@ -194,10 +194,13 @@ public class SimulationPanel extends JPanel implements KeyListener {
         int rightArmStartY = armY;
         int rightArmEndX = rightArmStartX + 10;
         int rightArmEndY = rightArmStartY + 20;
-        int shortHorizontalEndX = rightArmEndX + 10;
+        int shortHorizontalEndX = rightArmEndX + 15;
 
         g2d.drawLine(rightArmStartX, rightArmStartY, rightArmEndX, rightArmEndY);
         g2d.drawLine(rightArmEndX, rightArmEndY, shortHorizontalEndX, rightArmEndY);
+        g.setColor(Color.black); // Arm color
+        g.fillOval(shortHorizontalEndX, rightArmEndY-5, 20, 15);
+
 
         // Draw the legs
         g.setColor(new Color(255, 165, 0)); // Pant color
