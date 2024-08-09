@@ -18,8 +18,8 @@ public class Segway {
 
     public Segway(World world, float posX, float posY) {
         this.world = world;
-        initializeFrame(posX, posY); // Adjusted to start on the ground
-        initializeWheels(posX, posY); // Adjusted to start on the ground
+        initializeFrame(posX, posY);
+        initializeWheels(posX, posY);
         initializeJoints();
     }
 

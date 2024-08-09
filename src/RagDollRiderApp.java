@@ -56,7 +56,7 @@ public class RagDollRiderApp {
         int maxObstacles = 2;
         for (int i = 0; i < maxObstacles; i++) {
             float posX = random.nextFloat() * 10 + 10;
-            float posY = 1.0f; // Increased height
+            float posY = 1.0f;
             float size = random.nextFloat() * 1.5f + 0.5f;
             float speed = random.nextFloat() * 0.2f + 0.1f;
             createObstacle(posX, posY, size, speed);

@@ -24,7 +24,7 @@ public class SimulationPanel extends JPanel implements KeyListener {
     private static final int GAME_OVER_FONT_SIZE = 36;
     private static final double SCALE = 30.0;
 
-    private double wheelRotation = 0; // Keep track of wheel rotation for animation
+    private double wheelRotation = 0;
 
     public SimulationPanel(World world, Segway segway, Body person, List<Body> obstacles) {
         this.world = world;
