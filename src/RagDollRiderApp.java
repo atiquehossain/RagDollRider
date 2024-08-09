@@ -1,6 +1,7 @@
 import org.jbox2d.collision.shapes.PolygonShape;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.*;
+import org.jbox2d.dynamics.joints.RevoluteJoint;
 import org.jbox2d.dynamics.joints.RevoluteJointDef;
 
 import javax.swing.*;
@@ -12,43 +13,36 @@ public class RagDollRiderApp {
     private World world;
     private Segway segway;
     private Body person;
+    private Body rightArm;
+    private RevoluteJoint rightArmJoint;
     private SimulationPanel simulationPanel;
     private List<Body> obstacles;
-    
 
     public RagDollRiderApp() {
         world = new World(new Vec2(0, -10));
         initializeGround();
         initializeSegwayMan();
-
         initializeObstacles();
         initializePerson();
         initializeUI();
     }
 
     private void initializeSegwayMan() {
-
-        segway = new Segway(world, 3.0f, 3.0f);
+        segway = new Segway(world, 0.0f, 1.5f);
     }
 
     private void initializeGround() {
-        // Define the ground body
         BodyDef groundBodyDef = new BodyDef();
-        // Position the ground body at (0.0f, 0.0f)
         groundBodyDef.position.set(0.0f, 0.0f);
         Body groundBody = world.createBody(groundBodyDef);
 
-        // Create a polygon shape for the ground
         PolygonShape groundBox = new PolygonShape();
-        // Set the shape as a box with width 50.0f and height 0.5f
         groundBox.setAsBox(50.0f, 0.5f);
 
-        // Define the fixture for the ground
         FixtureDef groundFixture = new FixtureDef();
         groundFixture.shape = groundBox;
-        groundFixture.density = 0.0f; // Ground does not need density as it is static
-        groundFixture.friction = 0.6f; // Set the friction of the ground
-        // Attach the fixture to the ground body
+        groundFixture.density = 0.0f;
+        groundFixture.friction = 0.6f;
         groundBody.createFixture(groundFixture);
     }
 
@@ -62,7 +56,7 @@ public class RagDollRiderApp {
         int maxObstacles = 2;
         for (int i = 0; i < maxObstacles; i++) {
             float posX = random.nextFloat() * 10 + 10;
-            float posY = 0.5f; // Adjusted height
+            float posY = 1.0f; // Increased height
             float size = random.nextFloat() * 1.5f + 0.5f;
             float speed = random.nextFloat() * 0.2f + 0.1f;
             createObstacle(posX, posY, size, speed);
@@ -92,11 +86,11 @@ public class RagDollRiderApp {
     private void initializePerson() {
         BodyDef personDef = new BodyDef();
         personDef.type = BodyType.DYNAMIC;
-        personDef.position.set(5.0f, 3.0f); // Adjusted to stand on the Segway
+        personDef.position.set(5.0f, 3.0f);
         person = world.createBody(personDef);
 
         PolygonShape personShape = new PolygonShape();
-        personShape.setAsBox(0.5f, 1.5f); // Adjusted person size
+        personShape.setAsBox(0.5f, 1.5f);
         FixtureDef personFixture = new FixtureDef();
         personFixture.shape = personShape;
         personFixture.density = 1.0f;
@@ -106,9 +100,36 @@ public class RagDollRiderApp {
         RevoluteJointDef jointDef = new RevoluteJointDef();
         jointDef.bodyA = segway.getFrame();
         jointDef.bodyB = person;
-        jointDef.localAnchorA.set(0, 1.5f); // Adjust the anchor point as needed
-        jointDef.localAnchorB.set(0, -1.5f); // Adjust the anchor point as needed
+        jointDef.localAnchorA.set(0, 1.5f);
+        jointDef.localAnchorB.set(0, -1.5f);
         world.createJoint(jointDef);
+
+        initializeRightArm();
+    }
+
+    private void initializeRightArm() {
+        BodyDef armDef = new BodyDef();
+        armDef.type = BodyType.DYNAMIC;
+
+        PolygonShape armShape = new PolygonShape();
+        armShape.setAsBox(0.1f, 0.5f);
+        FixtureDef armFixture = new FixtureDef();
+        armFixture.shape = armShape;
+        armFixture.density = 0.5f;
+
+        armDef.position.set(5.5f, 3.5f);
+        rightArm = world.createBody(armDef);
+        rightArm.createFixture(armFixture);
+
+        RevoluteJointDef armJointDef = new RevoluteJointDef();
+        armJointDef.bodyA = person;
+        armJointDef.localAnchorA.set(0.5f, 1.0f);
+        armJointDef.bodyB = rightArm;
+        armJointDef.localAnchorB.set(0, -0.5f);
+        armJointDef.enableLimit = true;
+        armJointDef.lowerAngle = (float) -Math.PI / 4;
+        armJointDef.upperAngle = (float) Math.PI / 4;
+        rightArmJoint = (RevoluteJoint) world.createJoint(armJointDef);
     }
 
     private void initializeUI() {
@@ -123,7 +144,7 @@ public class RagDollRiderApp {
     public void start() {
         while (true) {
             world.step(1.0f / 60.0f, 6, 2);
-          //  simulationPanel.updateObstacles();
+            simulationPanel.updateObstacles();
             simulationPanel.repaint();
 
             try {
